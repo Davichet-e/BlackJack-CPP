@@ -8,11 +8,16 @@ class Player
 {
 private:
     std::pair<Hand, std::optional<Hand>> m_hands;
-    std::string_view m_name;
+    std::string m_name;
     int m_initial_money, m_actual_money, m_bet;
 
 public:
-    Player(std::string_view name, int initial_money, Deck &deck);
+    Player(std::string name, int initial_money, Deck &deck);
+
+    int GetActualMoney() const;
+    int GetInitialMoney() const;
+    std::string_view GetName() const;
+    const std::pair<Hand, std::optional<Hand>> &GetHands() const;
 
     void ResetHands();
 
@@ -26,3 +31,5 @@ public:
     int Win(int hand_index);
     void Lose();
 };
+
+std::ostream &operator<<(std::ostream &stream, const Player &player);

@@ -36,27 +36,35 @@ bool Card::operator==(const Card &other)
     return m_name == other.m_name && m_suit == other.m_suit;
 }
 
-std::ostream &operator<<(std::ostream &stream, const Card &card)
+std::string Card::ToString() const
 {
     std::string_view suit;
-    switch (card.GetSuit())
+    switch (m_suit)
     {
     case Suit::HEARTS:
-        suit = "HEARTS";
+        suit = "♥";
         break;
     case Suit::DIAMONDS:
-        suit = "DIAMONS";
+        suit = "♦";
         break;
     case Suit::CLUBS:
-        suit = "CLUBS";
+        suit = "♣";
         break;
     case Suit::PIKES:
-        suit = "PIKES";
+        suit = "♠";
         break;
     }
-    stream << card.GetName() << " of " << suit;
+    return std::string(m_name) + " of " + suit.data();
+}
+
+std::ostream &operator<<(std::ostream &stream, const Card &card)
+{
+
+    stream << card.ToString();
     return stream;
 }
+
+Deck::Deck() { Deck(4); }
 
 Deck::Deck(int n_of_decks)
 {

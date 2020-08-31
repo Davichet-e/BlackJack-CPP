@@ -1,10 +1,12 @@
 #include "hand.h"
 
-Deck &Hand::s_deck = Deck(1);
+Deck &Hand::s_deck = Deck();
+
 Hand::Hand(Deck &deck)
 {
     InitializeAtributes();
 }
+
 Hand::Hand()
 {
     InitializeAtributes();
@@ -20,6 +22,11 @@ Hand::Hand(std::vector<Card> &cards, Deck &deck)
         CheckIfAce(card);
     }
     CheckAcePoints();
+}
+
+int Hand::GetPoints() const
+{
+    return m_points;
 }
 
 const std::vector<Card> &Hand::GetCards() const
@@ -111,4 +118,47 @@ int Hand::CalculatePoints(const std::vector<Card> &cards)
 void Hand::SetDeck(Deck deck)
 {
     s_deck = deck;
+}
+
+std::vector<std::string> split(char *phrase, std::string delimiter)
+{
+    std::vector<std::string> list;
+    std::string s(phrase);
+    size_t pos = 0;
+    std::string token;
+    while ((pos = s.find(delimiter)) != std::string::npos)
+    {
+        token = s.substr(0, pos);
+        list.push_back(token);
+        s.erase(0, pos + delimiter.length());
+    }
+    list.push_back(s);
+    return list;
+}
+
+std::string join(const std::vector<Card> &range, const char *separator)
+{
+    if (range.empty())
+        return std::string();
+
+    return std::accumulate(
+        std::next(range.begin()),
+        range.end(),
+        range[0].ToString(),
+        [&separator](std::string acc, Card b) {
+            return acc + separator + b.ToString();
+        });
+};
+
+// Maybe FIXME??
+std::ostream &operator<<(std::ostream &stream, const Hand &hand)
+{
+    std::vector<Card> cards = hand.GetCards();
+    int points = hand.GetPoints();
+    Card lastCard = cards.back();
+    cards.resize(cards.size() - 1);
+    auto a = join(cards, ", ");
+
+    stream << a << " and " << lastCard << " (" << points << " points)";
+    return stream;
 }

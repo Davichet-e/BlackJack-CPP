@@ -30,6 +30,8 @@ public:
 
     int Value() const;
 
+    std::string ToString() const;
+
     bool operator==(const Card &other);
 };
 
@@ -41,6 +43,7 @@ private:
     std::vector<Card> m_cards;
 
 public:
+    Deck();
     Deck(int n_of_decks);
 
     std::vector<Card> GetCards() const;

@@ -1,8 +1,15 @@
 #include "player.h"
 
-Player::Player(std::string_view name, int initial_money, Deck &deck)
+Player::Player(std::string name, int initial_money, Deck &deck)
     : m_hands({Hand(deck), std::nullopt}), m_name(name), m_initial_money(initial_money),
-      m_actual_money(initial_money), m_bet(0) {}
+      m_actual_money(initial_money), m_bet(0)
+{
+}
+
+int Player::GetActualMoney() const { return m_actual_money; }
+int Player::GetInitialMoney() const { return m_initial_money; }
+std::string_view Player::GetName() const { return m_name; }
+const std::pair<Hand, std::optional<Hand>> &Player::GetHands() const { return m_hands; }
 
 void Player::ResetHands()
 {
@@ -27,7 +34,6 @@ void Player::Hit(int hand_index)
     {
         m_hands.second->DealCard();
     }
-    // Maybe printing?
 }
 
 std::optional<std::string_view> Player::Double()
@@ -128,4 +134,10 @@ void Player::Lose()
         m_actual_money -= m_bet / 2;
     else
         m_actual_money -= m_bet;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Player &player)
+{
+    stream << player.GetName();
+    return stream;
 }
