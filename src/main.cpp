@@ -1,10 +1,3 @@
-#include <charconv>
-#include <array>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include "player.h"
 
 std::string AskUser(std::string_view prompt)
@@ -12,6 +5,7 @@ std::string AskUser(std::string_view prompt)
     std::cout << prompt << "\n> ";
     std::string input;
     std::getline(std::cin, input);
+    std::cout << std::endl;
     return input;
 }
 
@@ -71,9 +65,7 @@ int AskNumberOfPeople()
         std::optional<int> maybeNumber =
             AskUserNumber("\nHow many people are going to play? (1-7)");
         if (!maybeNumber.has_value())
-        {
             continue;
-        }
         int number = maybeNumber.value();
         if (!(0 < number && number <= 7))
         {
@@ -94,6 +86,7 @@ void StartGame(std::vector<Player> &players, Deck &deck)
     int nOfPeople = AskNumberOfPeople();
     AskAndSetPlayerAttributes(nOfPeople, players, deck);
 }
+
 int AskPlayerBet(Player &player)
 {
     int bet;
@@ -115,7 +108,6 @@ int AskPlayerBet(Player &player)
             break;
         }
     }
-    std::cout << bet << std::endl;
     return bet;
 }
 bool HandWinOrLose(Hand &hand)
@@ -170,9 +162,11 @@ void PlayerTurn(Player &player, Deck &deck)
               << " and " << hand.GetCards()[1]
               << " (" << hand.GetPoints() << " points)\n"
               << std::endl;
+
+    bool hasDoubled;
     for (int i = 0; i < 2; i++)
     {
-        bool hasDoubled = false;
+        hasDoubled = false;
         while (!HandWinOrLose(hand) && (!hasDoubled || hand.GetCards().size() < 3))
         {
             hand = GetPlayerHand(player, i);
@@ -409,9 +403,6 @@ int AskUserNOfDecks()
 
 int main()
 {
-#ifdef _WIN32
-    SetConsoleOutputCP(65001);
-#endif
     std::cout << "Welcome to BlackJack!\n"
               << std::endl;
 
