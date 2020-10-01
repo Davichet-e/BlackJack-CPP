@@ -29,28 +29,28 @@ std::optional<int> AskUserNumber(std::string_view prompt)
 }
 
 void AskAndSetPlayerAttributes(
-    int nOfPeople,
+    int n_of_people,
     std::vector<Player> &players,
     Deck &deck)
 {
-    for (int i = 0; i < nOfPeople; i++)
+    for (int i = 0; i < n_of_people; i++)
     {
         auto name = AskUser("\nPlease, enter your name player " + std::to_string(i));
         while (true)
         {
-            std::optional<int> maybeNumber =
+            std::optional<int> maybe_number =
                 AskUserNumber("How much money do you have? (Use only integer values)");
-            if (!maybeNumber.has_value())
+            if (!maybe_number.has_value())
                 continue;
-            int initialMoney = maybeNumber.value();
-            if (initialMoney < 50)
+            int initial_money = maybe_number.value();
+            if (initial_money < 50)
             {
                 std::cout << "The initial money must be greater or equal than 50\n"
                           << std::endl;
             }
             else
             {
-                players.push_back(Player(name, initialMoney, deck));
+                players.push_back(Player(name, initial_money, deck));
                 break;
             }
         }
@@ -59,14 +59,14 @@ void AskAndSetPlayerAttributes(
 
 int AskNumberOfPeople()
 {
-    int nOfPeople;
+    int n_of_people;
     while (true)
     {
-        std::optional<int> maybeNumber =
+        std::optional<int> maybe_number =
             AskUserNumber("\nHow many people are going to play? (1-7)");
-        if (!maybeNumber.has_value())
+        if (!maybe_number.has_value())
             continue;
-        int number = maybeNumber.value();
+        int number = maybe_number.value();
         if (!(0 < number && number <= 7))
         {
             std::cout << "The number of people must be between 1 and 7"
@@ -74,17 +74,17 @@ int AskNumberOfPeople()
         }
         else
         {
-            nOfPeople = number;
+            n_of_people = number;
             break;
         }
     }
-    return nOfPeople;
+    return n_of_people;
 }
 
 void StartGame(std::vector<Player> &players, Deck &deck)
 {
-    int nOfPeople = AskNumberOfPeople();
-    AskAndSetPlayerAttributes(nOfPeople, players, deck);
+    int n_of_people = AskNumberOfPeople();
+    AskAndSetPlayerAttributes(n_of_people, players, deck);
 }
 
 int AskPlayerBet(Player &player)
@@ -92,11 +92,11 @@ int AskPlayerBet(Player &player)
     int bet;
     while (true)
     {
-        std::optional<int> maybeNumber = AskUserNumber("What bet do you wanna make? (Use only integral values)");
-        if (!maybeNumber.has_value())
+        std::optional<int> maybe_number = AskUserNumber("What bet do you wanna make? (Use only integral values)");
+        if (!maybe_number.has_value())
             continue;
 
-        int number = maybeNumber.value();
+        int number = maybe_number.value();
         if (number > player.GetActualMoney())
         {
             std::cout << "Your bet cannot be greater than your actual money.\n"
@@ -143,10 +143,10 @@ bool CheckIfYes(std::string_view user_decision)
     return user_decision == "yes" || user_decision == "y" || user_decision == "Yes" || user_decision == "Y" || user_decision == "1";
 }
 
-const Hand &GetPlayerHand(Player &player, int handIndex)
+const Hand &GetPlayerHand(Player &player, int hand_index)
 {
-    return handIndex == 0 ? player.GetHands().first
-                          : player.GetHands().second.value();
+    return hand_index == 0 ? player.GetHands().first
+                           : player.GetHands().second.value();
 }
 void PlayerTurn(Player &player, Deck &deck)
 {
@@ -163,38 +163,38 @@ void PlayerTurn(Player &player, Deck &deck)
               << " (" << hand.GetPoints() << " points)\n"
               << std::endl;
 
-    bool hasDoubled;
+    bool has_doubled;
     for (int i = 0; i < 2; i++)
     {
-        hasDoubled = false;
-        while (!HandWinOrLose(hand) && (!hasDoubled || hand.GetCards().size() < 3))
+        has_doubled = false;
+        while (!HandWinOrLose(hand) && (!has_doubled || hand.GetCards().size() < 3))
         {
             hand = GetPlayerHand(player, i);
             if (player.GetHands().second.has_value())
             {
                 std::cout << "\n(Hand #" << (i + 1) << ")" << std::endl;
             }
-            auto userDecision = AskUser("What do you want to do?\nAvailable Commands: (h)it, (s)tand, (sp)lit, (d)ouble, (surr)ender");
-            if (userDecision == "h" || userDecision == "hit")
+            auto user_decision = AskUser("What do you want to do?\nAvailable Commands: (h)it, (s)tand, (sp)lit, (d)ouble, (surr)ender");
+            if (user_decision == "h" || user_decision == "hit")
             {
                 player.Hit(i);
                 hand = GetPlayerHand(player, i);
 
                 std::cout << "Now, the cards are: " << hand << std::endl;
             }
-            else if (userDecision == "s" || userDecision == "stand")
+            else if (user_decision == "s" || user_decision == "stand")
             {
                 std::cout << player << " stood" << std::endl;
                 break;
             }
-            else if (userDecision == "sp" || userDecision == "split")
+            else if (user_decision == "sp" || user_decision == "split")
             {
-                if (!hasDoubled)
+                if (!has_doubled)
                 {
-                    auto errorMessage = player.Split();
-                    if (errorMessage.has_value())
+                    auto error_message = player.Split();
+                    if (error_message.has_value())
                     {
-                        std::cout << errorMessage.value() << std::endl;
+                        std::cout << error_message.value() << std::endl;
                     }
                     else
                     {
@@ -208,18 +208,18 @@ void PlayerTurn(Player &player, Deck &deck)
                               << std::endl;
                 }
             }
-            else if (userDecision == "d" || userDecision == "double")
+            else if (user_decision == "d" || user_decision == "double")
             {
-                if (!hasDoubled)
+                if (!has_doubled)
                 {
-                    auto errorMessage = player.Double();
-                    if (errorMessage.has_value())
+                    auto error_message = player.Double();
+                    if (error_message.has_value())
                     {
-                        std::cout << errorMessage.value() << std::endl;
+                        std::cout << error_message.value() << std::endl;
                     }
                     else
                     {
-                        hasDoubled = true;
+                        has_doubled = true;
                         std::cout << "You have doubled the hand!\n"
                                   << std::endl;
                     }
@@ -230,14 +230,14 @@ void PlayerTurn(Player &player, Deck &deck)
                               << std::endl;
                 }
             }
-            else if (userDecision == "surr" || userDecision == "surrender")
+            else if (user_decision == "surr" || user_decision == "surrender")
             {
-                if (!hasDoubled)
+                if (!has_doubled)
                 {
-                    auto errorMessage = player.Surrender();
-                    if (errorMessage.has_value())
+                    auto error_message = player.Surrender();
+                    if (error_message.has_value())
                     {
-                        std::cout << errorMessage.value() << std::endl;
+                        std::cout << error_message.value() << std::endl;
                     }
                     else
                     {
@@ -273,10 +273,10 @@ bool DealerLost(Hand &dealer_hand)
 
 void DealerTurn(Hand &dealer_hand, Deck &deck)
 {
-    auto dealerCards = dealer_hand.GetCards();
+    auto dealer_cards = dealer_hand.GetCards();
     std::cout << "\nThe dealer's cards are "
-              << dealerCards[0] << " and "
-              << dealerCards[1] << "\n"
+              << dealer_cards[0] << " and "
+              << dealer_cards[1] << "\n"
               << std::endl;
     while (!DealerLost(dealer_hand) && dealer_hand.GetPoints() < 17)
     {
@@ -290,25 +290,25 @@ void EndGame(std::vector<Player> &players, Hand &dealer_hand)
 {
     std::cout << "####### Game Finished #######\n"
               << std::endl;
-    int dealerPoints = dealer_hand.GetPoints();
+    int dealer_points = dealer_hand.GetPoints();
     Hand hand;
-    int handPoints;
+    int hand_points;
     for (Player &player : players)
     {
         for (int i = 0; i < 2; i++)
         {
             // Possibly avoid copy
             hand = i == 0 ? player.GetHands().first : player.GetHands().second.value();
-            handPoints = hand.GetPoints();
+            hand_points = hand.GetPoints();
 
-            if (handPoints > dealerPoints || hand.HasBlackJack() && !dealer_hand.HasBlackJack())
+            if (hand_points > dealer_points || hand.HasBlackJack() && !dealer_hand.HasBlackJack())
             {
                 int moneyEarned = player.Win(i);
                 std::cout << player << (player.GetHands().second.has_value() ? " (#" + std::to_string(i + 1) + " hand)" : "")
                           << " won " << moneyEarned << "€! :)\n"
                           << std::endl;
             }
-            else if (handPoints == 0 || handPoints < dealerPoints)
+            else if (hand_points == 0 || hand_points < dealer_points)
             {
                 player.Lose();
                 std::cout << player << (player.GetHands().second.has_value() ? " (#" + std::to_string(i + 1) + " hand)" : "")
@@ -328,33 +328,33 @@ void EndGame(std::vector<Player> &players, Hand &dealer_hand)
 }
 bool AskIfNotNextGame(Player &player)
 {
-    bool playerNextGame;
-    int finalBalance = player.GetActualMoney() - player.GetInitialMoney(); // TODO
-    std::string finalBalanceString = (finalBalance >= 0 ? "+" : "") + std::to_string(finalBalance);
+    bool player_next_game;
+    int final_balance = player.GetActualMoney() - player.GetInitialMoney(); // TODO
+    std::string finalBalanceString = (final_balance >= 0 ? "+" : "") + std::to_string(final_balance);
     if (player.GetActualMoney() > 0)
     {
         std::string decision = AskUser("\n" + std::string(player.GetName()) + ", do you want to play again? (y/n)\n");
 
         if (CheckIfYes(decision))
-            playerNextGame = true;
+            player_next_game = true;
         else
         {
-            playerNextGame = false;
+            player_next_game = false;
             std::cout << "Thanks for playing, " << player
-                      << ", your final balance is " << finalBalance
+                      << ", your final balance is " << final_balance
                       << "\n"
                       << std::endl;
         }
     }
     else
     {
-        playerNextGame = false;
+        player_next_game = false;
         std::cout << player << ", you have lost all your money. Thanks for playing\n"
                   << std::endl;
     }
-    return !playerNextGame;
+    return !player_next_game;
 }
-// TODO
+
 bool NextGame(std::vector<Player> &players, Hand &dealer_hand, Deck &deck)
 {
     players.erase(std::remove_if(players.begin(), players.end(), AskIfNotNextGame), players.end());

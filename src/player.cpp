@@ -2,9 +2,7 @@
 
 Player::Player(std::string name, int initial_money, Deck &deck)
     : m_hands({Hand(deck), std::nullopt}), m_name(name), m_initial_money(initial_money),
-      m_actual_money(initial_money), m_bet(0)
-{
-}
+      m_actual_money(initial_money), m_bet(0) {}
 
 int Player::GetActualMoney() const { return m_actual_money; }
 int Player::GetInitialMoney() const { return m_initial_money; }

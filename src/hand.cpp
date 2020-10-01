@@ -155,10 +155,10 @@ std::ostream &operator<<(std::ostream &stream, const Hand &hand)
 {
     std::vector<Card> cards = hand.GetCards();
     int points = hand.GetPoints();
-    Card lastCard = cards.back();
+    Card last_card = cards.back();
     cards.resize(cards.size() - 1);
     auto a = join(cards, ", ");
 
-    stream << a << " and " << lastCard << " (" << points << " points)";
+    stream << a << " and " << last_card << " (" << points << " points)";
     return stream;
 }
